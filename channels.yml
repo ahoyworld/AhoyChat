@@ -1,0 +1,21 @@
+local:
+  aliases:
+    - l
+    - say
+  radius: 50
+  colour: white
+  prefix: '[LOCAL]'
+  suffix:
+  groups: {}
+  regions: {}
+  
+shout:
+  aliases:
+    - yell
+    - s
+  radius: 200
+  colour: red
+  prefix: '[YELL]'
+  suffix: 
+  groups: {}
+  regions {}

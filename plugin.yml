@@ -1,0 +1,10 @@
+name: AhoyChat
+main: uk.co.ahoyworld.AhoyChat
+version: 0.1
+
+commands:
+  channel:
+    description: Manages chat channels.
+    usage: /channel [list, add, remove, info]
+    permission: ahoychat.main
+    permission-message: Only administrators can use this command.
