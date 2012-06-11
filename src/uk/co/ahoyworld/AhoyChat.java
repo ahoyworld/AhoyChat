@@ -6,22 +6,26 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class AhoyChat extends JavaPlugin
 {
+	private Functions func;
+	
 	String channel;
 	Logger log;
 	File channelsFile;
 	FileConfiguration channels;
-	public HashMap<String,String> chatMode = new HashMap<String,String>();
-
+    public HashMap<String, String> channelList = new HashMap<String, String>(); //channel name, alias
+	public HashMap<String, String> chatMode = new HashMap<String, String>(); //player name, channel
 	
 	
 	public void onEnable()
@@ -29,19 +33,22 @@ public class AhoyChat extends JavaPlugin
 		log = this.getLogger();
 		
         channelsFile = new File(getDataFolder(), "channels.yml");
+        
         try
         {
             firstRun();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        
         channels = new YamlConfiguration();
         
         loadYamls();
+        
+        channelList = func.getAllChannels();
 		
 		log.info("Plugin enabled.");
 	}
-	
 	
 	
 	public void onDisable()
@@ -101,19 +108,25 @@ public class AhoyChat extends JavaPlugin
 	
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args)
     {
-    	//incorporate aliases in the future
-    	if (channels.getKeys(false).contains(cmd.getName()))
+    	if (channelList.containsValue(cmd.getName()))
     	{
-    		//getAliases();
-    		channel = cmd.getName();
+    		String player = sender.getName();
+    		String channel = func.getKeyFromValue(channelList, cmd.getName());
+    		boolean isSticky = func.isSticky(channel);
+    		Integer radius = func.getRadius(channel);
     		
     		if (args.length >= 1)
     		{
-    			//post message to selected channel
-    			//getMessage(args); //will get message by putting together the arguments from args
-    		} else {
-    			//change channel mode - sticky
+    			List<Player> playerList = func.getPlayerList(radius, player);
+    			String message = func.getMessage(args);
+    			
+    			func.sendMessage(player, message, channel, playerList);
     		}
+    		
+			if (isSticky)
+			{
+				func.switchChannel(player, channel);
+			}
     		
     		return true;
     	}
@@ -123,8 +136,6 @@ public class AhoyChat extends JavaPlugin
     	{
     		return true;
     	}
-    	
-    	
     	return false;
     }
 }

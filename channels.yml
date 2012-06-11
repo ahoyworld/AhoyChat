@@ -3,6 +3,7 @@ local:
     - l
     - say
   radius: 50
+  sticky: true
   colour: white
   prefix: '[LOCAL]'
   suffix:
@@ -14,8 +15,21 @@ shout:
     - yell
     - s
   radius: 200
+  sticky: false
   colour: red
   prefix: '[YELL]'
   suffix: 
   groups: {}
-  regions {}
+  regions: {}
+  
+global:
+  aliases:
+    - world
+    - all
+  radius: -1
+  sticky: true
+  colour: grey
+  prefix: '[GLOBAL]'
+  suffix:
+  groups: {}
+  regions: {}
